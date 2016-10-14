@@ -1,0 +1,31 @@
+{
+    "name": "studer-raimann.ch/dclpictureexport",
+    "description": "Data collection picture export UIHookPlugin.",
+    "type": "project",
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "Nicolas Schäfli",
+            "email": "ns@studer-raimann.ch",
+            "homepage": "https://studer-raimann.ch",
+            "role": "Software Engineer"
+        }
+    ],
+    "support": {
+        "email": "info@studer-raimann.ch"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "require": {
+        "php" : ">=5.5 || >=7.0"
+    },
+    "autoload": {
+        "classmap": ["./classes/"]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "classmap-authoritative": true,
+        "discard-changes": true,
+        "sort-packages": true
+    }
+}
