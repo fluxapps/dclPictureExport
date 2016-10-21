@@ -5,6 +5,7 @@ require_once './Modules/DataCollection/classes/class.ilObjDataCollectionGUI.php'
 require_once './Modules/DataCollection/classes/class.ilObjDataCollection.php';
 require_once './Modules/DataCollection/classes/class.ilObjDataCollectionAccess.php';
 
+use DclPictureExport\business\ExcelExport;
 use DclPictureExport\CommandExecutionService;
 
 /**
@@ -112,9 +113,32 @@ class ilDclPictureExportGUI implements CommandExecutionService
         //TODO: add gui stuff
     }
 
+    /**
+     * Handles the export post.
+     */
     private function doExport()
     {
-        //TODO: implement export
+        $this->checkAccess();
+        $ref_id = $_GET["ref_id"];
+        $table = $_POST["table_id"];
+
+        if($this->checkAccessByTableID($table))
+        {
+            $export = new ExcelExport($ref_id, $table);
+            $export->export(ExcelExport::EXPORT_EXCEL, null, true);
+            exit();
+        }
+
+        \ilUtil::sendFailure($this->pl->txt('export_failed'), true);
+        $this->redirectToExportPage();
+    }
+
+    /**
+     * Navigate to the picture export page.
+     */
+    private function redirectToExportPage()
+    {
+        $this->ctrl->redirect($this, self::COMMAND_RENDER_GUI);
     }
 
     /**
@@ -192,7 +216,29 @@ class ilDclPictureExportGUI implements CommandExecutionService
     }
 
     /**
-     * @return array
+     * Checks if the current user has the permission to access the table.
+     *
+     * @param   int     $table_id   The table id which should be used to check the permission.
+     * @return bool                 Returns true if the access is permitted otherwise false.
+     */
+    private function checkAccessByTableID($table_id)
+    {
+        if ($this->access->checkAccess("read", "", $_GET['ref_id'])) {
+            $tables = $this->getAvailableTables();
+            if(array_key_exists($table_id, $tables))
+            {
+                return true;
+            }
+        }
+
+        $this->error->raiseError($this->lng->txt("no_permission"), $this->error->WARNING);
+        return false;
+    }
+
+    /**
+     * Fetch all available tables readable for the current user.
+     *
+     * @return string[]     Name value table list.
      */
     private function getAvailableTables() {
         if (ilObjDataCollectionAccess::hasWriteAccess($this->dataCollection->ref_id)) {
@@ -200,12 +246,37 @@ class ilDclPictureExportGUI implements CommandExecutionService
         } else {
             $tables = $this->dataCollection->getVisibleTables();
         }
+        $tables = $this->getExportableTables($tables);
+
         $options = array();
         foreach ($tables as $table) {
             $options[$table->getId()] = $table->getTitle();
         }
 
         return $options;
+    }
+
+    /**
+     * Filters the given table array.
+     *
+     * @param ilDclTable[] $tableList   The table array which should be filtered.
+     *
+     * @return ilDclTable[] The exportable tables which were found in the given array.
+     */
+    private function getExportableTables($tableList)
+    {
+        $matches = [];
+        $refId = $_GET["ref_id"];
+
+        foreach ($tableList as $table)
+        {
+            if($table->getExportEnabled() || $table->hasPermissionToFields($refId))
+            {
+                $matches[] = $table;
+            }
+        }
+
+        return $matches;
     }
 
 }
