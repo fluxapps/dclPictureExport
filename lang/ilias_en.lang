@@ -4,3 +4,4 @@ button_export#:#Export
 dcl_table#:#Table
 export_failed_no_access_rights#:#Permission denied.
 export_failed_unknown_error#:#Export failed.
+no_exportable_tables_found#:#No exportable tables found.

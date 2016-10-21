@@ -186,23 +186,31 @@ class ilDclPictureExportGUI implements CommandExecutionService
 
     private function setToolbar()
     {
-        /**
-         * @var ilToolbarGUI $toolbar
-         */
-        $toolbar = $GLOBALS["DIC"]["ilToolbar"];
-        $toolbar->setFormAction($this->ctrl->getFormActionByClass(self::class, self::COMMAND_EXPORT));
-
         $tables = $this->getAvailableTables();
-        include_once './Services/Form/classes/class.ilSelectInputGUI.php';
-        $table_selection = new ilSelectInputGUI('', 'table_id');
-        $table_selection->setOptions($tables);
 
-        $toolbar->addText($this->pl->txt("dcl_table"));
-        $toolbar->addInputItem($table_selection);
-        $button = ilSubmitButton::getInstance();
-        $button->setCaption($this->pl->txt('button_export'), false);
-        $button->setCommand(self::COMMAND_EXPORT);
-        $toolbar->addButtonInstance($button);
+        if(count($tables) > 0)
+        {
+            /**
+             * @var ilToolbarGUI $toolbar
+             */
+            $toolbar = $GLOBALS["DIC"]["ilToolbar"];
+            $toolbar->setFormAction($this->ctrl->getFormActionByClass(self::class, self::COMMAND_EXPORT));
+
+            include_once './Services/Form/classes/class.ilSelectInputGUI.php';
+            $table_selection = new ilSelectInputGUI('', 'table_id');
+            $table_selection->setOptions($tables);
+
+            $toolbar->addText($this->pl->txt("dcl_table"));
+            $toolbar->addInputItem($table_selection);
+            $button = ilSubmitButton::getInstance();
+            $button->setCaption($this->pl->txt('button_export'), false);
+            $button->setCommand(self::COMMAND_EXPORT);
+            $toolbar->addButtonInstance($button);
+        }
+        else
+        {
+            ilUtil::sendInfo($this->pl->txt("no_exportable_tables_found"), false);
+        }
     }
 
     /**
