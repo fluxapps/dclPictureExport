@@ -54,7 +54,7 @@ class ExcelExport extends \ilDclContentExporter
                     $fieldContent = $recordField->getValue();
 
                     //get media object
-                    $mediaObject = new \ilObjMediaObject($fieldContent, false);
+                    $mediaObject = new \ilObjMediaObject($fieldContent);
                     $effectiveFileName = $this->copyMediaObjectToZipDirectory($mediaObject);
 
                     //copy media
@@ -104,7 +104,7 @@ class ExcelExport extends \ilDclContentExporter
      */
     private function isMediaObjectAlreadyKnown($media)
     {
-        $mediaName = (is_string($media)) ? $media : $media->getTitle();
+        $mediaName = (is_string($media)) ? $media : $media->getMediaItems()[0]->getLocation();
         return array_key_exists($mediaName, $this->fileNameSet);
     }
 
@@ -120,10 +120,16 @@ class ExcelExport extends \ilDclContentExporter
      */
     private function createUniqueMediaObjectName(\ilObjMediaObject $media)
     {
-        if(!$this->isMediaObjectAlreadyKnown($media))
-            return $media->getTitle();
+        /**
+         * @var \ilMediaItem $mediaItem
+         */
+        $mediaItem = $media->getMediaItems()[0];
+        $originalName = $mediaItem->getLocation();
 
-        $mediaName = $media->getTitle();
+        if(!$this->isMediaObjectAlreadyKnown($originalName))
+            return $originalName;
+
+        $mediaName = $originalName;
 
         //get suffix
         $matches = [];
@@ -167,9 +173,13 @@ class ExcelExport extends \ilDclContentExporter
      */
     private function copyMediaObjectToZipDirectory(\ilObjMediaObject $media)
     {
-        $originalName = $media->getTitle();
+        /**
+         * @var \ilMediaItem $mediaItem
+         */
+        $mediaItem = $media->getMediaItems()[0];
+        $originalName = $mediaItem->getLocation();
         $uniqueName = $this->createUniqueMediaObjectName($media);
-        $exportPath = $this->getExportContentPath(self::EXPORT_EXCEL) . "/{$uniqueName}";
+        $exportPath = $this->getExportContentPath(self::EXPORT_EXCEL) . "{$uniqueName}";
         $mediaDirectory = \ilUtil::getWebspaceDir() . "/mobs/mm_" . $media->getId() . "/{$originalName}";
         copy($mediaDirectory, $exportPath);
 
