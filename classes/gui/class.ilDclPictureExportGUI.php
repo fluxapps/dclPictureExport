@@ -230,7 +230,7 @@ class ilDclPictureExportGUI implements CommandExecutionService
                 return true;
             }
         }
-        
+
         $this->error->raiseError($this->lng->txt("no_permission"), $this->error->WARNING);
         return false;
     }
@@ -246,12 +246,37 @@ class ilDclPictureExportGUI implements CommandExecutionService
         } else {
             $tables = $this->dataCollection->getVisibleTables();
         }
+        $tables = $this->getExportableTables($tables);
+
         $options = array();
         foreach ($tables as $table) {
             $options[$table->getId()] = $table->getTitle();
         }
 
         return $options;
+    }
+
+    /**
+     * Filters the given table array.
+     *
+     * @param ilDclTable[] $tableList   The table array which should be filtered.
+     *
+     * @return ilDclTable[] The exportable tables which were found in the given array.
+     */
+    private function getExportableTables($tableList)
+    {
+        $matches = [];
+        $refId = $_GET["ref_id"];
+
+        foreach ($tableList as $table)
+        {
+            if($table->getExportEnabled() || $table->hasPermissionToFields($refId))
+            {
+                $matches[] = $table;
+            }
+        }
+
+        return $matches;
     }
 
 }
