@@ -53,15 +53,17 @@ class ExcelExport extends \ilDclContentExporter
                     $recordField = $record->getRecordField($field->getId());
                     $fieldContent = $recordField->getValue();
 
-                    //get media object
-                    $mediaObject = new \ilObjMediaObject($fieldContent);
-                    $effectiveFileName = $this->copyMediaObjectToZipDirectory($mediaObject);
+	                if ($fieldContent) {
+		                //get media object
+		                $mediaObject = new \ilObjMediaObject($fieldContent);
+		                $effectiveFileName = $this->copyMediaObjectToZipDirectory($mediaObject);
 
-                    //copy media
-                    $this->rememberMediaObjectName($effectiveFileName);
+		                //copy media
+		                $this->rememberMediaObjectName($effectiveFileName);
 
-                    //set field value for the excel export
-                    $recordField->setValue($effectiveFileName, true);
+		                //set field value for the excel export
+		                $recordField->setValue($effectiveFileName, true);
+	                }
                 }
 
                 $record->fillRecordFieldExcelExport($worksheet, $row, $col, $field->getId());
