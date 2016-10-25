@@ -124,13 +124,33 @@ class ilDclPictureExportGUI implements CommandExecutionService
 
         if($this->checkAccessByTableID($table))
         {
-            $export = new ExcelExport($ref_id, $table);
+            $export = new ExcelExport($ref_id, $table, $this->buildFilter($table));
             $export->export(ExcelExport::EXPORT_EXCEL, null, true);
             exit();
         }
 
         \ilUtil::sendFailure($this->pl->txt('export_failed'), true);
         $this->redirectToExportPage();
+    }
+
+
+	/**
+	 * build filter of first available tableview for given table_id
+	 *
+	 * @param $table_id
+	 *
+	 * @return array
+	 */
+    private function buildFilter($table_id) {
+    	$tableview_id = ilDclCache::getTableCache($table_id)->getFirstTableViewId($this->dataCollection->getRefId());
+	    $tableview = ilDclTableView::find($tableview_id);
+	    $filter = array();
+	    foreach ($tableview->getFieldSettings() as $fs) {
+		    if ($filter_value = $fs->getFilterValue()) {
+			    $filter = $filter + $filter_value;
+		    }
+	    }
+	    return $filter;
     }
 
     /**
