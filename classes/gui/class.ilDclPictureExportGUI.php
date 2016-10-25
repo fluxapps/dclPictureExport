@@ -253,6 +253,9 @@ class ilDclPictureExportGUI implements CommandExecutionService
             $tables = $this->dataCollection->getTables();
         } else {
             $tables = $this->dataCollection->getVisibleTables();
+	        if (!$tables) {
+	        	$tables = ilDclCache::getTableCache($this->dataCollection->getFirstVisibleTableId());
+	        }
         }
         $tables = $this->getExportableTables($tables);
 
