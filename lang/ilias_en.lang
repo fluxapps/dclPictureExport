@@ -5,3 +5,6 @@ dcl_table#:#Table
 export_failed_no_access_rights#:#Permission denied.
 export_failed_unknown_error#:#Export failed.
 no_exportable_tables_found#:#No exportable tables found.
+input_ref_ids#:#DataCollections
+input_ref_ids_info#:#Commaseparated ref IDs of DataCollections, for which this plugin should be activated. If empty, the export tab will be visible for all DataCollections.
+updated#:#Configuration updated

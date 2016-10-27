@@ -2,6 +2,7 @@
 
 require_once("./Services/UIComponent/classes/class.ilUIHookPluginGUI.php");
 require_once './Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/dclPictureExport/vendor/autoload.php';
+require_once './Customizing/global/plugins/Services/UIComponent/UserInterfaceHook/dclPictureExport/classes/class.ildclPictureExportConfig.php';
 
 /**
  * Class ilDclPictureExportUIHookGUI
@@ -40,7 +41,10 @@ class ilDclPictureExportUIHookGUI extends \ilUIHookPluginGUI
      */
     function modifyGUI($a_comp, $a_part, $a_par = array())
     {
-        if ($a_part == 'tabs' && ilObject::_lookupType($_GET['ref_id'], true) == 'dcl') {
+        if ($a_part == 'tabs' && ilObject::_lookupType($_GET['ref_id'], true) == 'dcl'
+            && (!ildclPictureExportConfig::getConfigValue(ildclPictureExportConfig::F_REF_IDS)
+		        || in_array($_GET['ref_id'], explode(',', ildclPictureExportConfig::F_REF_IDS)))
+        ) {
             /** @var ilTabsGUI $tabs */
             $tabs = $a_par['tabs'];
             $this->ctrl->setParameterByClass(ilDclPictureExportGUI::class, 'ref_id', $_GET['ref_id']);

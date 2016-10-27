@@ -5,3 +5,6 @@ dcl_table#:#Tabelle
 export_failed_no_access_rights#:#Keine Zugriffsberechtigung für dieses Objekt.
 export_failed_unknown_error#:#Export fehlgeschlagen.
 no_exportable_tables_found#:#Keine exportierbaren Tabellen gefunden.
+input_ref_ids#:#Datensammlungen
+input_ref_ids_info#:#Kommaseparierte Ref-IDs der Datensammlungen, für die das Plugin aktiviert werden soll. Ohne Eingabe wird der Export-Tab bei jeder Datensammlung angezeigt.
+updated#:#Einstellungen aktualisiert
