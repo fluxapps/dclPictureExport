@@ -122,11 +122,7 @@ class ExcelExport extends \ilDclContentExporter
      */
     private function createUniqueMediaObjectName(\ilObjMediaObject $media)
     {
-        /**
-         * @var \ilMediaItem $mediaItem
-         */
-        $mediaItem = $media->getMediaItems()[0];
-        $originalName = $mediaItem->getLocation();
+        $originalName = \ilObjMediaObject::fixFilename($media->getUntranslatedTitle());
 
         if(!$this->isMediaObjectAlreadyKnown($originalName))
             return $originalName;
@@ -175,11 +171,7 @@ class ExcelExport extends \ilDclContentExporter
      */
     private function copyMediaObjectToZipDirectory(\ilObjMediaObject $media)
     {
-        /**
-         * @var \ilMediaItem $mediaItem
-         */
-        $mediaItem = $media->getMediaItems()[0];
-        $originalName = $mediaItem->getLocation();
+        $originalName = \ilObjMediaObject::fixFilename($media->getUntranslatedTitle());
         $uniqueName = $this->createUniqueMediaObjectName($media);
         $exportPath = $this->getExportContentPath(self::EXPORT_EXCEL) . "{$uniqueName}";
         $mediaDirectory = \ilUtil::getWebspaceDir() . "/mobs/mm_" . $media->getId() . "/{$originalName}";
