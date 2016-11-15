@@ -43,7 +43,7 @@ class ilDclPictureExportUIHookGUI extends \ilUIHookPluginGUI
     {
         if ($a_part == 'tabs' && ilObject::_lookupType($_GET['ref_id'], true) == 'dcl'
             && (!ildclPictureExportConfig::getConfigValue(ildclPictureExportConfig::F_REF_IDS)
-		        || in_array($_GET['ref_id'], explode(',', ildclPictureExportConfig::F_REF_IDS)))
+		        || in_array($_GET['ref_id'], explode(',', ildclPictureExportConfig::getConfigValue(ildclPictureExportConfig::F_REF_IDS))))
         ) {
             /** @var ilTabsGUI $tabs */
             $tabs = $a_par['tabs'];
