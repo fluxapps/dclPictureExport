@@ -45,6 +45,9 @@ class ilDclPictureExportUIHookGUI extends \ilUIHookPluginGUI
             && (!ildclPictureExportConfig::getConfigValue(ildclPictureExportConfig::F_REF_IDS)
 		        || in_array($_GET['ref_id'], explode(',', ildclPictureExportConfig::getConfigValue(ildclPictureExportConfig::F_REF_IDS))))
         ) {
+        	if (count(ilDclPictureExportPlugin::getAvailableTables($_GET['ref_id'])) == 0) {
+        		return;
+	        }
             /** @var ilTabsGUI $tabs */
             $tabs = $a_par['tabs'];
             $this->ctrl->setParameterByClass(ilDclPictureExportGUI::class, 'ref_id', $_GET['ref_id']);

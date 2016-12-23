@@ -147,6 +147,26 @@ class ilDclPictureExportGUI implements CommandExecutionService
 	    $filter = array();
 	    foreach ($tableview->getFieldSettings() as $fs) {
 		    if ($filter_value = $fs->getFilterValue()) {
+		    	foreach ($filter_value as $key => $value) {
+		    		if ($value === null) {
+		    			unset($filter_value[$key]);
+				    }
+			    }
+		    	if (count($filter_value) > 1) {
+		    		$tmp = array();
+					foreach ($filter_value as $key => $value) {
+						if ($value === false) {
+							continue;
+						}
+						$explode_keys = explode('_', $key);
+						$key2 = array_pop($explode_keys);
+						if (DateTime::createFromFormat('m.d.Y', $value) !== FALSE) {
+							$value = new ilDate($value, IL_CAL_DATE);
+						}
+						$tmp[implode('_', $explode_keys)][$key2] = $value;
+					}
+					$filter_value = $tmp;
+			    }
 			    $filter = $filter + $filter_value;
 		    }
 	    }
@@ -206,7 +226,7 @@ class ilDclPictureExportGUI implements CommandExecutionService
 
     private function setToolbar()
     {
-        $tables = $this->getAvailableTables();
+        $tables = ilDclPictureExportPlugin::getAvailableTables($_GET['ref_id']);
 
         if(count($tables) > 0)
         {
@@ -252,7 +272,7 @@ class ilDclPictureExportGUI implements CommandExecutionService
     private function checkAccessByTableID($table_id)
     {
         if ($this->access->checkAccess("read", "", $_GET['ref_id'])) {
-            $tables = $this->getAvailableTables();
+            $tables = ilDclPictureExportPlugin::getAvailableTables($_GET['ref_id']);
             if(array_key_exists($table_id, $tables))
             {
                 return true;
@@ -263,51 +283,5 @@ class ilDclPictureExportGUI implements CommandExecutionService
         return false;
     }
 
-    /**
-     * Fetch all available tables readable for the current user.
-     *
-     * @return string[]     Name value table list.
-     */
-    private function getAvailableTables() {
-        if (ilObjDataCollectionAccess::hasWriteAccess($this->dataCollection->ref_id)) {
-            $tables = $this->dataCollection->getTables();
-        } else {
-            $tables = $this->dataCollection->getVisibleTables();
-	        if (!$tables) {
-	        	$tables = ilDclCache::getTableCache($this->dataCollection->getFirstVisibleTableId());
-	        }
-        }
-        $tables = $this->getExportableTables($tables);
-
-        $options = array();
-        foreach ($tables as $table) {
-            $options[$table->getId()] = $table->getTitle();
-        }
-
-        return $options;
-    }
-
-    /**
-     * Filters the given table array.
-     *
-     * @param ilDclTable[] $tableList   The table array which should be filtered.
-     *
-     * @return ilDclTable[] The exportable tables which were found in the given array.
-     */
-    private function getExportableTables($tableList)
-    {
-        $matches = [];
-        $refId = $_GET["ref_id"];
-
-        foreach ($tableList as $table)
-        {
-            if($table->getExportEnabled() || $table->hasPermissionToFields($refId))
-            {
-                $matches[] = $table;
-            }
-        }
-
-        return $matches;
-    }
 
 }
