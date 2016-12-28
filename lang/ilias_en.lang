@@ -8,3 +8,4 @@ no_exportable_tables_found#:#No exportable tables found.
 input_ref_ids#:#DataCollections
 input_ref_ids_info#:#Commaseparated ref IDs of DataCollections, for which this plugin should be activated. If empty, the export tab will be visible for all DataCollections.
 updated#:#Configuration updated
+config_invalid#:#One or more entered ids are not valid or do not belong to a DataCollection. Please try again.

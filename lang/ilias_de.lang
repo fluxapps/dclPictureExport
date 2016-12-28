@@ -8,3 +8,4 @@ no_exportable_tables_found#:#Keine exportierbaren Tabellen gefunden.
 input_ref_ids#:#Datensammlungen
 input_ref_ids_info#:#Kommaseparierte Ref-IDs der Datensammlungen, für die das Plugin aktiviert werden soll. Ohne Eingabe wird der Export-Tab bei jeder Datensammlung angezeigt.
 updated#:#Einstellungen aktualisiert
+config_invalid#:#Eine oder mehrere der eingegebenen Ids sind nicht gültig oder gehören zu keiner Datensammlung. Bitte versuchen Sie es erneut.
