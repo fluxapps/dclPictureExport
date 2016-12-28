@@ -117,7 +117,6 @@ class ildclPictureExportConfigGUI extends ilPluginConfigGUI {
 		if ($key == ildclPictureExportConfig::F_REF_IDS) {
 			foreach (explode(',', $value) as $id) {
 				if (ilObject2::_lookupType($id, true) != 'dcl' && $id != null) {
-					$this->form->getItemByPostVar(ildclPictureExportConfig::F_REF_IDS)->setAlert('blabla');
 					ilUtil::sendFailure($this->pl->txt("config_invalid"), true);
 					$this->ctrl->redirect($this, 'configure');
 				}
